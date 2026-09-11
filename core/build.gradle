@@ -1,0 +1,124 @@
+plugins {
+    id "java-library"
+}
+
+group = "com.hackli"
+version = project.mod_version
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api "com.google.code.gson:gson:2.13.2"
+}
+
+java {
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    it.options.encoding = "UTF-8"
+}
+
+// ---------------------------------------------------------------------------
+// Vanilla asset extraction (design tooling, not shipped)
+//
+// Turns a Minecraft client jar into the flat textures + "item id -> texture"
+// index the designers draw icons from.
+//
+//   gradle :core:extractMcAssets -PclientJar="<path to 1.21.11.jar>"
+//
+// Without -PclientJar the task looks in the usual launcher locations under the
+// current user's home directory. Nothing here is redistributed: the extracted
+// artwork stays in the gitignored build/ folder and is only ever read locally.
+// ---------------------------------------------------------------------------
+tasks.register("extractMcAssets", JavaExec) {
+    group = "hackli"
+    description = "Extract item/block textures and an item->texture index from a Minecraft client jar"
+    dependsOn tasks.named("classes")
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "com.hackli.guidesigner.assets.AssetExtractor"
+
+    def configured = project.findProperty("clientJar")
+    def candidates = configured != null
+        ? [file(configured)]
+        : [
+            file("${System.getProperty("user.home")}/AppData/Roaming/.minecraft/versions/1.21.11/1.21.11.jar"),
+            file("${System.getProperty("user.home")}/.minecraft/versions/1.21.11/1.21.11.jar"),
+        ]
+    def clientJar = candidates.find { it.isFile() }
+
+    // Meteor's GUI icons (reset / edit / favourite / copy / paste) live in the
+    // Meteor jar rather than the Minecraft client, so they come from there.
+    def configuredMeteor = project.findProperty("meteorJar")
+    def meteorJar = null
+    if (configuredMeteor != null) {
+        meteorJar = file(configuredMeteor)
+    } else {
+        def root = file("${System.getProperty("user.home")}/.gradle/caches/modules-2/files-2.1/meteordevelopment/meteor-client")
+        if (root.isDirectory()) {
+            def found = fileTree(root) { include "**/meteor-client-*.jar" }
+                .files.findAll { !it.name.contains("sources") && !it.name.contains("javadoc") }
+            // Pick the newest 1.21.x build: the harness targets that API, and
+            // several versions sit in the cache at once.
+            def preferred = found.findAll { it.name.contains("1.21") }
+            def pool = preferred.isEmpty() ? found : preferred
+            if (!pool.isEmpty()) meteorJar = pool.sort { it.name }.last()
+        }
+    }
+
+    doFirst {
+        if (clientJar == null) {
+            throw new GradleException(
+                "No Minecraft client jar found. Pass one explicitly:\n" +
+                "  gradle :core:extractMcAssets -PclientJar=\"<path to 1.21.11.jar>\"")
+        }
+        logger.lifecycle("Extracting assets from ${clientJar}")
+        logger.lifecycle(meteorJar == null || !meteorJar.isFile()
+            ? "No Meteor jar found - the GUI icons (reset/edit) will be placeholders."
+            : "Extracting GUI icons from ${meteorJar}")
+    }
+
+    args = [clientJar == null ? "" : clientJar.absolutePath,
+            rootProject.file("build/mc-assets").absolutePath,
+            meteorJar == null || !meteorJar.isFile() ? "" : meteorJar.absolutePath]
+}
+
+// ---------------------------------------------------------------------------
+// Generated icon atlas (shipped instead of the game's artwork)
+//
+//   gradle :core:genIconAtlas -PclientJar="<path to 1.21.11.jar>"
+//
+// Writes assets/icons/icon-atlas.png + icon-atlas.tsv: one synthetic 16x16 icon
+// per vanilla item id, chosen by hashing the id. The client jar is only read for
+// the list of item ids, so the result contains no Mojang artwork and may be
+// redistributed (CC0-1.0). Re-run it when the target Minecraft version changes.
+// ---------------------------------------------------------------------------
+tasks.register("genIconAtlas", JavaExec) {
+    group = "hackli"
+    description = "Write the generated item icon atlas (icon-atlas.png/.tsv) to assets/icons"
+    dependsOn tasks.named("extractMcAssets")
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "com.hackli.guidesigner.assets.AssetExtractor"
+
+    def outDir = rootProject.file("assets/icons")
+    def clientJar = providers.gradleProperty("clientJar")
+        .orElse(file("${System.getProperty("user.home")}/AppData/Roaming/.minecraft/versions/1.21.11/1.21.11.jar").absolutePath)
+
+    // Absolute path goes in last, so the file does not have to exist at
+    // configuration time.
+    args = ["--icons-only", clientJar.get(), outDir.absolutePath]
+
+    doFirst {
+        def jar = file(clientJar.get())
+        if (!jar.isFile()) {
+            throw new GradleException(
+                "No Minecraft client jar found at ${jar}.\n" +
+                "Pass one explicitly: gradle :core:genIconAtlas -PclientJar=\"<path to 1.21.11.jar>\"")
+        }
+        logger.lifecycle("Generating the icon atlas from the item ids in ${jar}")
+    }
+}
+

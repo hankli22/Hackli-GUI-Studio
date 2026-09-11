@@ -1,0 +1,44 @@
+Hackli GUI Studio - generated item icon set
+==========================================
+
+Files in this directory
+-----------------------
+
+  icon-atlas.png   the icon sheet: square cells laid out in a grid
+  icon-atlas.tsv   the index: "id <TAB> column <TAB> row <TAB> cell size"
+
+Regenerate both with:
+
+  gradle :core:genIconAtlas -PclientJar="<path to a Minecraft client jar>"
+
+The client jar is read only for the list of item ids. Every icon is then drawn
+from a hash of its own id - a base colour, a gradient wash, a bevel and one of
+eight simple glyphs. The result is therefore identical on every machine and for
+every run, and contains none of the game's artwork.
+
+Provenance and licence
+----------------------
+
+These icons are original, program-generated work by the Hackli GUI Studio
+authors. To the extent possible under law, they are dedicated to the public
+domain under the Creative Commons CC0 1.0 Universal Public Domain Dedication:
+
+  https://creativecommons.org/publicdomain/zero/1.0/
+
+You may copy, modify and redistribute them without attribution.
+
+What this set is NOT
+--------------------
+
+These are not the Minecraft item sprites, and they are not intended to resemble
+them. They exist so that the standalone editor stays readable when no game
+assets are present. Minecraft is a trademark of Mojang Synergies AB; this
+project is not affiliated with or endorsed by Mojang or Microsoft.
+
+To design against the real sprites, extract them yourself from a client jar you
+already own - locally, for your own use:
+
+  gradle :core:extractMcAssets -PclientJar="<path to 1.21.11.jar>"
+
+That output stays in the gitignored build/mc-assets directory and is never
+packaged into a release.

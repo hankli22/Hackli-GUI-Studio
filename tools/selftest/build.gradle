@@ -1,0 +1,43 @@
+plugins {
+    id "application"
+}
+
+group = "com.hackli"
+version = project.mod_version
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(":core")
+}
+
+application {
+    mainClass = "com.hackli.guidesigner.testing.CoreSelfTest"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    it.options.encoding = "UTF-8"
+}
+
+// Self-contained runnable jar so the check can run with a plain `java -cp`.
+tasks.register("fatJar", Jar) {
+    archiveClassifier = "all"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes "Main-Class": application.mainClass.get()
+    }
+    from sourceSets.main.output
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA"
+    }
+}
+
+build {
+    dependsOn tasks.named("fatJar")
+}

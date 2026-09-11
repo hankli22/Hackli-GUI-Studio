@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        maven { url = "https://maven.fabricmc.net/" }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "hackli-gui-studio"
+
+// The supported editor.
+include("core")
+include("simulator-gl")
+
+// Headless self test for everything that does not need a window.
+include("selftest")
+project(":selftest").projectDir = file("tools/selftest")
+
+// Archived 2026-09: the Swing desktop editor and the browser (web) editor are
+// no longer maintained or built. Only the OpenGL editor and the in-game
+// designer are supported; see docs/DESIGN.md for why they were dropped.
+
+// The Minecraft mod lives in the root project (its own build.gradle).

@@ -1,0 +1,129 @@
+{
+  "name": "Widgets",
+  "version": "1",
+  "root": {
+    "id": "root",
+    "type": "CONTAINER",
+    "layout": "ABSOLUTE",
+    "width": 480,
+    "height": 650,
+    "text": "Widget showcase",
+    "children": [
+      {
+        "id": "sec-basic",
+        "type": "CONTAINER",
+        "style": "SECTION",
+        "x": 20,
+        "y": 40,
+        "width": 440,
+        "height": 120,
+        "text": "Basic section",
+        "children": [
+          { "id": "lbl-1", "type": "LABEL", "text": "A label inside a collapsible section" },
+          { "id": "btn-1", "type": "BUTTON", "text": "Click me", "width": 200, "height": 42 }
+        ]
+      },
+      {
+        "id": "sec-closed",
+        "type": "CONTAINER",
+        "style": "SECTION",
+        "collapsed": true,
+        "x": 20,
+        "y": 175,
+        "width": 440,
+        "height": 60,
+        "text": "Collapsed section",
+        "children": [
+          { "id": "lbl-2", "type": "LABEL", "text": "hidden child" }
+        ]
+      },
+      {
+        "id": "row-1",
+        "type": "CONTAINER",
+        "orientation": "HORIZONTAL",
+        "x": 20,
+        "y": 245,
+        "width": 440,
+        "height": 50,
+        "children": [
+          { "id": "btn-a", "type": "BUTTON", "text": "A", "width": 120, "height": 42 },
+          {
+            "id": "btn-b",
+            "type": "BUTTON",
+            "text": "B (expandX)",
+            "width": 120,
+            "height": 42,
+            "cell": { "expandX": true }
+          }
+        ]
+      },
+      {
+        "id": "txt-1",
+        "type": "TEXTBOX",
+        "x": 20,
+        "y": 315,
+        "width": 440,
+        "height": 42,
+        "placeholder": "plain text box"
+      },
+      {
+        "id": "view-1",
+        "type": "CONTAINER",
+        "style": "VIEW",
+        "x": 20,
+        "y": 375,
+        "width": 440,
+        "height": 90,
+        "children": [
+          { "id": "vl-1", "type": "LABEL", "text": "Scrollable row 1" },
+          { "id": "vb-1", "type": "BUTTON", "text": "Row 2", "height": 42 },
+          { "id": "vl-2", "type": "LABEL", "text": "Scrollable row 3" },
+          { "id": "vb-2", "type": "BUTTON", "text": "Row 4", "height": 42 },
+          { "id": "vl-3", "type": "LABEL", "text": "Scrollable row 5" }
+        ]
+      },
+      {
+        "id": "num-1",
+        "type": "NUMBER",
+        "x": 20,
+        "y": 480,
+        "width": 440,
+        "height": 30,
+        "value": 42,
+        "min": 0,
+        "max": 100,
+        "integer": true,
+        "handler": "onSizeChanged"
+      },
+      {
+        "id": "num-2",
+        "type": "NUMBER",
+        "x": 20,
+        "y": 520,
+        "width": 440,
+        "height": 30,
+        "value": 1.5,
+        "min": 0,
+        "max": 5,
+        "step": 0.1,
+        "integer": false,
+        "showButtons": true,
+        "handler": "onScaleChanged"
+      },
+      {
+        "id": "num-3",
+        "type": "NUMBER",
+        "x": 20,
+        "y": 560,
+        "width": 440,
+        "height": 30,
+        "value": 25,
+        "min": 0,
+        "max": 100,
+        "integer": true,
+        "showSlider": false,
+        "handler": "onCountChanged"
+      }
+    ]
+  }
+}
