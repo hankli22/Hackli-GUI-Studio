@@ -1,0 +1,19 @@
+# Normalise line endings so a clone behaves the same on every platform.
+* text=auto
+
+# Windows batch files MUST use CRLF: cmd.exe mis-parses a .cmd/.bat that was
+# checked out with bare LF (it reads lines at the wrong offsets and tries to
+# execute fragments). Forcing eol=crlf here means the scripts work no matter
+# what core.autocrlf is set to.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Shell scripts are the opposite: a CRLF shebang breaks them.
+*.sh text eol=lf
+
+# Binaries: never touch them.
+*.png binary
+*.jar binary
+*.zip binary
+*.ttf binary
+*.ico binary

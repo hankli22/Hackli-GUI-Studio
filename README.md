@@ -7,6 +7,18 @@ design plugin GUIs **visually**: drag & drop widgets onto a canvas, tweak them i
 **export ready-to-use Java code** with a generated **backend interface** for your plugin. Designs are stored as simple
 JSON layout documents, and players can **re-arrange the layout live in-game and save it** via the built-in edit mode.
 
+> ## ⚠️ 使用须知与免责声明
+>
+> 项目作者 hankli22 不对使用该软件开发的插件负责。
+>
+> 同时，作者提醒你：**不应该在禁止使用外挂的服务器上开挂**，确保你所在的服务器允许作弊。
+> 未经允许的作弊行为会破坏游戏环境，请遵守社区规则；并请妥善甄别软件（模组）安全性。
+>
+> <sub>**In English —** The author (hankli22) is **not responsible for any plugin built with this
+> software**. The author reminds you **not to cheat on servers that prohibit cheating**; make sure the
+> server you play on allows it. Cheating without permission damages the game environment, so follow
+> your community's rules — and check the safety and provenance of any mod you install.</sub>
+
 > **Licence:** Released under **GPLv3**. The generated **runtime** export links against this mod's
 > `UiScreen`, so distributing it comes with the usual GPLv3 obligations; the **static** export is
 > self-contained and normally does not. Details, and why this is not legal advice, in

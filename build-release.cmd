@@ -159,6 +159,11 @@ set "R=%~1\README.txt"
 >>"%R%" echo GPLv3; static exports are self-contained. Details: docs\LICENSE-PLUGINS.md.
 >>"%R%" echo Third-party components and asset terms: THIRD-PARTY-NOTICES.md
 >>"%R%" echo.
+>>"%R%" echo.
+>>"%R%" echo   项目作者 hankli22 不对使用该软件开发的插件负责。
+>>"%R%" echo   同时，作者提醒你：不应该在禁止使用外挂的服务器上开挂，确保你所在的服务器
+>>"%R%" echo   允许作弊。未经允许的作弊行为会破坏游戏环境，请遵守社区规则，
+>>"%R%" echo   妥善甄别软件（模组）安全性。
 >>"%R%" echo WHAT IS IN HERE
 >>"%R%" echo.
 >>"%R%" echo   hackli-gui-studio-%VERSION%.jar     the Minecraft mod (put this in your mods folder)
